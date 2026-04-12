@@ -1,0 +1,10 @@
+{
+  "hooks": [
+    {
+      "event": "UserPromptSubmit",
+      "type": "command",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh guided-build:started '{}'",
+      "matcher": "^/guided-build"
+    }
+  ]
+}
