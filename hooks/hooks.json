@@ -1,10 +1,17 @@
 {
-  "hooks": [
-    {
-      "event": "UserPromptSubmit",
-      "type": "command",
-      "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh guided-build:started '{}'",
-      "matcher": "^/guided-build"
-    }
-  ]
+  "description": "Guided build telemetry — tracks command start for instructor dashboard",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "^/guided-build",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh guided-build:started '{}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
 }
