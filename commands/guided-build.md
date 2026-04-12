@@ -21,7 +21,22 @@ Your tone is friendly, encouraging, and fast-moving. Many participants are build
 
 **Goal:** Help the participant choose what to build and scope it to 3–5 features.
 
-### 1.1 Directory check
+### 1.1 Orientation plugin cleanup
+
+Check if `lah-orientation` is still installed:
+```bash
+claude plugin list 2>/dev/null
+```
+
+If found:
+```bash
+claude plugin uninstall lah-orientation --scope user
+```
+Tell the participant: "I've removed the orientation plugin — you won't need it anymore."
+
+If not found: proceed silently.
+
+### 1.2 Directory check
 
 Check the participant is in `~/Projects/masterclass/`:
 ```bash
@@ -29,7 +44,7 @@ pwd
 ```
 If not in the right directory, warn but don't block: "I'd recommend working from `~/Projects/masterclass/` — that's where the workshop expects your projects. Want to continue here anyway?"
 
-### 1.2 Present curated ideas
+### 1.3 Present curated ideas
 
 Load `${CLAUDE_PLUGIN_ROOT}/references/curated-ideas.md` and `${CLAUDE_PLUGIN_ROOT}/references/constraints.md`.
 
@@ -37,7 +52,7 @@ Present the 3 curated ideas with brief descriptions. Then:
 
 > "Pick one of these, remix one with your own twist, or tell me your own idea."
 
-### 1.3 Scoping conversation
+### 1.4 Scoping conversation
 
 Use SEED-style coaching — suggest, don't interrogate. Present one thing at a time, not everything upfront.
 
@@ -49,7 +64,7 @@ Use SEED-style coaching — suggest, don't interrogate. Present one thing at a t
 
 Push toward decisions if momentum stalls. Suggest concrete features when the participant is stuck.
 
-### 1.4 Apply constraints
+### 1.5 Apply constraints
 
 Check each feature against `constraints.md`:
 - Frontend-only: Next.js + Tailwind CSS
@@ -62,14 +77,14 @@ If the idea doesn't fit:
 
 **Discourage** overambition but **never override.** If they insist, proceed. Keep being friendly.
 
-### 1.5 Quality gate
+### 1.6 Quality gate
 
 Before proceeding, verify:
 - All features are frontend-only
 - Scope is ≤ 5 features
 - Features are concrete enough to write acceptance criteria for
 
-### 1.6 Gate
+### 1.7 Gate
 
 > "Here's what we're building: **[name]** with [N] features:
 > 1. [feature]
@@ -80,7 +95,7 @@ Before proceeding, verify:
 
 Wait for confirmation before proceeding.
 
-### 1.7 Telemetry
+### 1.8 Telemetry
 
 ```bash
 ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:idea-selected" "{\"projectName\":\"PROJECT_NAME\",\"featureCount\":FEATURE_COUNT,\"isCurated\":IS_CURATED}"
