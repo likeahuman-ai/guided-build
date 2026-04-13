@@ -1,6 +1,18 @@
 {
-  "description": "Guided build telemetry — tracks command start for instructor dashboard",
+  "description": "Guided build telemetry — tracks session lifecycle and command start for instructor dashboard",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh session:started '{\"pluginVersion\":\"1.0.2\"}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "matcher": "^/guided-build",
@@ -8,6 +20,18 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh guided-build:started '{}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh session:ended",
             "timeout": 5
           }
         ]
