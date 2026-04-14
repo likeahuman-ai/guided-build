@@ -1,25 +1,24 @@
 ---
 description: >
-  Start the guided build — pick an idea, scope it, build it, and see it running locally.
-  A compressed dev flow that takes you from zero to a working app in under an hour.
-  Use when participant says "start the guided build", "I'm ready to build",
-  "what are we building", "let's go", or the module tells them to run this command.
-argument-hint: "[none]"
+  Scaffold a guided build project with design baked in. Sets up Next.js + Convex + Tailwind
+  with the participant's chosen shape, theme, and vibe. Run after picking your project in the
+  playground. Use when participant says "start the guided build", "scaffold my project",
+  "set up my project", or the playground tells them to run this command.
+argument-hint: "[shape] [theme] — e.g. webshop coffee, booking yoga, quiz movies"
 ---
 
-# /guided-build — Compressed Dev Flow
+# /guided-build — Project Scaffold + Design
 
-You are guiding a beginner through a compressed dev flow: idea, plan, scaffold, build, review. One command, five phases. The participant picks an idea, you build it, they see it running in their browser.
+You are scaffolding a guided build project for a beginner. The playground has already walked them through picking a shape (webshop / booking / quiz) and a theme. Your job: set up the project with the right tech stack and design, so the playground's build prompts work.
 
 Load `${CLAUDE_PLUGIN_ROOT}/references/tone.md` and follow it throughout.
+Load `${CLAUDE_PLUGIN_ROOT}/references/shapes.md` for shape + theme data.
 
 **Initial request:** $ARGUMENTS
 
 ---
 
-## Phase 0: PRE-CHECKS (~1 min, automatic)
-
-**Goal:** Verify the environment is ready. Non-blocking — warn but never stop the flow.
+## Phase 0: Pre-checks (~1 min, automatic)
 
 ### 0.1 Working directory check
 
@@ -30,318 +29,160 @@ pwd
 If not in `~/Projects/masterclass/`:
 > "I'd recommend working from `~/Projects/masterclass/` — that's where the workshop expects your projects. Want to continue here anyway?"
 
-If they want to switch:
-```bash
-cd ~/Projects/masterclass
-```
-
 ### 0.2 Orientation plugin cleanup
 
-Check if `lah-orientation` is still installed:
 ```bash
-claude plugin list 2>/dev/null
+claude plugin uninstall lah-orientation --scope user 2>/dev/null
 ```
 
-If found:
-```bash
-claude plugin uninstall lah-orientation --scope user
-```
-> "I've removed the orientation plugin — you won't need it anymore."
-
+If removed: "I've removed the orientation plugin — you won't need it anymore."
 If not found: proceed silently.
 
 ### 0.3 Telemetry config check
 
-Check telemetry config exists:
 ```bash
 cat ~/.lah/telemetry-config.json 2>/dev/null
 ```
 
-If missing: warn but proceed. Telemetry events will fail silently — that's acceptable for the guided build.
+If missing: proceed silently. Telemetry events will no-op.
 
 ---
 
-## Phase 1: IDEA (~5 min, interactive)
+## Phase 1: Shape + Theme (~1 min, interactive or from arguments)
 
-**Goal:** Help the participant choose what to build and scope it to 3–5 features.
+### 1.1 Parse arguments
 
-### 1.1 Present curated ideas
+If `$ARGUMENTS` contains a shape and theme (e.g. "webshop coffee", "booking yoga", "quiz movies"), use them directly.
 
-Load `${CLAUDE_PLUGIN_ROOT}/references/curated-ideas.md` and `${CLAUDE_PLUGIN_ROOT}/references/constraints.md`.
+If `$ARGUMENTS` is empty or unclear, ask:
 
-Present the 3 curated ideas with brief descriptions. Then:
+> "Which shape did you pick in the playground?"
+> - **Webshop** — product catalog, cart, checkout
+> - **Booking** — availability grid, booking form, admin queue
+> - **Quiz** — timed questions, score, share card
 
-> "Pick one of these, remix one with your own twist, or tell me your own idea."
+Then ask which theme within that shape (see `shapes.md` for the 4 options per shape).
 
-### 1.2 Handle the response
+### 1.2 Vibe question
 
-**If they pick a curated idea:**
-> "Good choice. Want to change anything about it? Add or remove any features?"
+> "What vibe should your [theme] [shape] have?"
+> - Clean and minimal
+> - Bold and colourful
+> - Dark and moody
+> - Warm and organic
 
-**If they bring their own idea and it's concrete:**
-> "Nice idea. What are the 3–5 things this app needs to do?"
+If they skip: apply the theme's natural default from `shapes.md` (colour direction column).
 
-**If they bring their own idea but it's vague:**
-Run a discovery conversation — 3 quick questions to make it concrete:
-1. "Who uses this? Just you, or other people too?"
-2. "What's the one thing it absolutely needs to do?"
-3. "When someone opens it, what do they see first?"
-
-Then suggest 3–4 features based on their answers:
-> "Based on that, here's what I'd include: [features]. Sound right, or would you swap anything?"
-
-**If they freeze or say "I don't know":**
-Don't wait. Gently direct:
-> "No worries — most people pick one of the three starters. The bookmark saver is popular because you get a nice visual grid. Want to go with that, or does the quote board or portfolio sound more like you?"
-
-Push toward a decision. If momentum stalls after 2 exchanges, suggest the most visual curated idea and move on.
-
-### 1.3 Apply constraints
-
-Check each feature against `constraints.md`:
-- Frontend-only: Next.js + Tailwind CSS
-- No database (use React state or localStorage), no auth, no external APIs
-- 3–5 features max
-- Each feature must produce a visible result in the browser
-
-If the idea doesn't fit:
-> "Love the idea — but [database/auth/etc.] takes more time than we have. How about [simplified version]? You can build the full version in your afternoon track."
-
-**Discourage** overambition but **never override.** If they insist after one redirect, proceed with a note.
-
-### 1.4 Confirm
-
-> "Here's what we're building: **[name]** with [N] features:
-> 1. [feature]
-> 2. [feature]
-> 3. [feature]
->
-> Sound good?"
-
-Wait for confirmation before proceeding.
-
-### 1.5 Telemetry
+### 1.3 Telemetry
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:idea-selected" "{\"projectName\":\"PROJECT_NAME\",\"featureCount\":FEATURE_COUNT,\"isCurated\":IS_CURATED}"
+bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:shape-selected" "{\"shape\":\"SHAPE\",\"theme\":\"THEME\",\"vibe\":\"VIBE\"}"
 ```
 
 ---
 
-## Phase 2: PRD (~3 min, in-session)
+## Phase 2: Scaffold (~5 min, autonomous)
 
-**Goal:** Turn the scoped idea into a lightweight build contract with testable acceptance criteria.
+**Goal:** Create a running project with design baked in, so the playground's PRD prompt ("my starter already has Next.js 16 + Tailwind + Convex") is true.
 
-### 2.1 Generate the mini-PRD
+### 2.1 Create Next.js project
 
-Write a lightweight PRD using this structure:
-
-```markdown
-# [Project Name]
-
-## What
-[1–2 sentence description]
-
-## Features
-1. **[Feature name]** — [description]
-   - AC: Given [precondition], when [action], then [expected result]
-2. **[Feature name]** — [description]
-   - AC: Given [precondition], when [action], then [expected result]
-3. **[Feature name]** — [description]
-   - AC: Given [precondition], when [action], then [expected result]
-
-## Tech Stack
-- Next.js (App Router)
-- Tailwind CSS
-- No database — local state only
-
-## Out of Scope
-- [Items explicitly excluded during scoping]
-```
-
-Acceptance criteria use Given/When/Then format. Keep them simple — testable in a browser by someone who's never coded.
-
-Order features so each builds on the last where possible.
-
-### 2.2 Save the PRD
-
-Create the project directory and save:
-```bash
-mkdir -p guided-build/.prd
-```
-
-Save the PRD to `guided-build/.prd/guided-build.md`. This protects against session loss.
-
-### 2.3 Confirm
-
-Present the PRD to the participant:
-
-> "This is the plan. Ready to build?"
-
-Wait for confirmation.
-
----
-
-## Phase 3: SCAFFOLD (~3 min, autonomous)
-
-**Goal:** Create the project, start the dev server.
-
-### 3.1 Scaffold the project
-
-Work inside `~/Projects/masterclass/guided-build/`:
-
-**Attempt 1** — standard scaffolding:
 ```bash
 cd ~/Projects/masterclass
 npx create-next-app@latest guided-build --typescript --tailwind --app --src-dir --no-eslint --import-alias "@/*" --use-npm
 ```
 
-**If attempt 1 fails** — retry with explicit npm registry:
+**If it fails:** retry with `npm cache clean --force` first. If that fails: create the project manually (mkdir, npm init, install deps). If that fails: "Raise your hand — an instructor will help."
+
+### 2.2 Set up Convex (webshop and booking only)
+
+For webshop and booking shapes:
+
 ```bash
-npm cache clean --force
-npx create-next-app@latest guided-build --typescript --tailwind --app --src-dir --no-eslint --import-alias "@/*" --use-npm
+cd ~/Projects/masterclass/guided-build
+npm install convex
+npx convex dev
 ```
 
-**If attempt 2 fails** — manual scaffolding:
-```bash
-mkdir -p guided-build/src/app
-cd guided-build
-npm init -y
-npm install next@latest react@latest react-dom@latest typescript @types/react @types/node tailwindcss @tailwindcss/postcss postcss
+> "Convex is opening your browser to sign in. Create a free account if you don't have one — takes 30 seconds."
+
+For quiz: skip Convex. The quiz is client-side only.
+
+### 2.3 Apply design
+
+Based on the vibe selection, configure the project's visual identity:
+
+**Fonts:** Add a Google Fonts import to `src/app/layout.tsx`. Pick a distinctive pairing — NOT Inter, Roboto, Open Sans, DM Sans, Space Grotesk, Outfit, or Plus Jakarta Sans. Match the font to the theme + vibe (see `shapes.md` colour direction for guidance).
+
+**Colours:** Add CSS custom properties to `src/app/globals.css`:
+```css
+:root {
+  --color-primary: /* dominant from theme */;
+  --color-accent: /* accent from theme */;
+  --color-bg: /* background */;
+  --color-text: /* tinted neutral, not pure black */;
+  --color-muted: /* lighter text */;
+  --color-border: /* tinted border */;
+}
 ```
-Then manually create `tsconfig.json`, `postcss.config.mjs`, `src/app/globals.css`, `src/app/layout.tsx`, and `src/app/page.tsx` with minimal boilerplate.
 
-**If attempt 3 fails:**
-> "Something went wrong with the project setup. Raise your hand and an instructor will help — they've seen this before."
+**Background:** Apply a subtle background treatment — gradient, tint, or texture. Not flat white.
 
-Stop here. Don't keep retrying.
+**Layout:** Set up a basic page structure in `src/app/page.tsx` with the project name, a header, and styled empty content area. The participant should see a designed shell on localhost, not a blank Next.js starter.
 
-### 3.2 Write CLAUDE.md breadcrumb
+### 2.4 Write Convex schema + seed data
 
-Navigate into the project and write `guided-build/CLAUDE.md`:
+For webshop: `products` table with 3 themed products from `shapes.md`.
+For booking: `slots` table with 42 slots (7 days x 6), all open. Entity descriptions from `shapes.md`.
+For quiz: hardcoded array of 10 questions in a TypeScript file (no Convex).
 
+### 2.5 Write CLAUDE.md
+
+Write `guided-build/CLAUDE.md` with two sections:
+
+**Section 1: Project context**
 ```markdown
 # Guided Build — Warm-Up Project
 
-This project was created during Module 1 (Guided Build) as a warm-up exercise.
-It is NOT the participant's main project.
+This is a Module 1 warm-up project, not the participant's main project.
+Created by `/guided-build` from the `lah-guided-build` plugin.
 
-- Created by: `/guided-build` command from the `lah-guided-build` plugin
-- Purpose: First experience of the dev flow (idea, PRD, build, review)
-- Status: Warm-up complete
+Shape: [shape] | Theme: [theme] | Vibe: [vibe]
+Stack: Next.js 16 + Tailwind CSS [+ Convex if applicable]
 
-## For AI sessions reading this file
-
-This folder is a self-contained warm-up project. Do not treat it as the participant's
-main project. Do not build on top of it or extend it unless explicitly asked.
-
-The participant's real project will be created in a separate folder by the
-`lah-dev-fundamental` plugin during Module 2.
-
-This folder is safe to delete.
+This folder is self-contained and safe to delete after the workshop.
 ```
 
-### 3.3 Start the dev server
+**Section 2: Design rules** (copy from `${CLAUDE_PLUGIN_ROOT}/references/design-guide.md`)
+
+This means every prompt the participant pastes from the playground will make Claude read these rules first.
+
+### 2.6 Start dev server
 
 ```bash
 cd ~/Projects/masterclass/guided-build && npm run dev
 ```
-
-> "Your project is running at http://localhost:3000 — open it in your browser. You should see the Next.js starter page."
 
 If port 3000 is taken:
 ```bash
 npx next dev --port 3001
 ```
-> "Port 3000 was in use, so your project is running at http://localhost:3001 instead."
 
-### 3.4 Telemetry
+### 2.7 Telemetry
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:scaffolded" "{\"projectName\":\"PROJECT_NAME\"}"
+bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:scaffolded" "{\"shape\":\"SHAPE\",\"theme\":\"THEME\",\"vibe\":\"VIBE\"}"
 ```
 
 ---
 
-## Phase 4: BUILD (~15–20 min, autonomous with status updates)
+## Phase 3: Handoff (~30 sec)
 
-**Goal:** Build every feature from the PRD, verifying each one against its acceptance criteria.
-
-Build directly — no subagent per feature. The participant sees you working: files being created, code being written, the dev server updating.
-
-### For each feature in PRD order:
-
-**Step 1: Build.**
-Create or modify files. Work inside the `guided-build/` directory. Follow the patterns already in the project (component naming, file structure, export style).
-
-**Step 2: Verify.**
-After building, check the feature:
-1. Read back the actual code that was written
-2. Compare against the feature's acceptance criteria (Given/When/Then)
-3. If gaps exist: fix the root cause, not the symptom
-4. Max 3 fix attempts per feature
-5. If still not right after 3 attempts: move on. Note it for the review phase.
-
-**Step 3: Status update.**
-After each feature:
-> "Feature [N]/[Total] done: **[name]**. [What they'll see in their browser.]"
-
-No detailed technical explanation. Just what changed visually.
-
-### After all features
-
-Fire telemetry immediately — before moving to review. If the review phase fails or the session ends, the build progress is still captured.
-
-```bash
-bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:built" "{\"featureCount\":FEATURE_COUNT,\"featureNames\":[\"NAME1\",\"NAME2\"]}"
-```
-
-Flow continues automatically to Phase 5.
-
----
-
-## Phase 5: REVIEW + REFACTOR (~5 min+, interactive and open-ended)
-
-**Goal:** Clean up the code, verify everything works, and let the participant explore.
-
-### 5.1 Background cleanup pass
-
-Dispatch `gb-simplifier` agent (sonnet) using the prompt template from `${CLAUDE_PLUGIN_ROOT}/references/simplifier-prompt.md`.
-
-Apply fixes silently. Verify the dev server still works after cleanup.
-
-### 5.2 Present what was built
-
-Verify the dev server is running. If it stopped, restart it:
-```bash
-cd ~/Projects/masterclass/guided-build && npm run dev
-```
-
-Present a test checklist generated from the acceptance criteria:
-> "Your app has [N] features. Here's what to check in your browser:"
+> "Your project is running at http://localhost:3000. Open it in your browser — you should see a designed page with your [theme] branding."
 >
-> - [ ] **[Feature 1]**: [action] — you should see [expected result]
-> - [ ] **[Feature 2]**: [action] — you should see [expected result]
-> - [ ] **[Feature 3]**: [action] — you should see [expected result]
+> "Head back to the playground. The next step is generating your mini-PRD — the playground will give you a prompt to paste."
 
-### 5.3 Engage the participant
-
-> "How does it look? Anything you'd like to change or improve?"
-
-- If they have feedback: make the changes conversationally
-- If they want more features: "What else should it do?" and build it
-- If they're exploring: let them drive, answer questions, suggest things to try
-- If they're satisfied: "Your app is running locally. When your instructor says it's time, you'll move to your track modules."
-
-This phase is **open-ended.** Participants who finish in 30 min keep going — adding features, tweaking the design, exploring Claude Code. This is their first "you do" moment. Don't rush them.
-
-### 5.4 Telemetry
-
-When the participant signals they're done (or the instructor calls time):
-
-```bash
-bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:completed" "{\"featureCount\":FEATURE_COUNT,\"additionalFeaturesRequested\":BOOLEAN}"
-```
+Done. The plugin's active work is finished. The playground drives from here.
 
 ---
 
@@ -349,11 +190,10 @@ bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:completed" "{\"
 
 Load `${CLAUDE_PLUGIN_ROOT}/references/tone.md` for communication guidance.
 
-- **Be friendly and encouraging.** Many participants are building for the first time.
-- **Show the work.** Files being created, code being written. Not a black box.
+- **Be fast.** This is setup, not the build. Get the project running and hand off.
+- **Be friendly.** Many participants are scaffolding for the first time.
 - **If something breaks, fix it.** Don't explain debugging. Just fix it and move on.
-- **Never block.** If a feature is stuck after 3 attempts, skip it and come back later.
-- **Participant's choices take priority.** Warn about overambition, but don't override.
-- **Speed over depth.** This is a warm-up. The real build happens in the afternoon.
-- **Stay in `guided-build/`.** All files go in the subdirectory. Never create files in the workspace root.
-- **Don't teach unless asked.** The learning experience is watching, not listening.
+- **Never block.** If Convex sign-up stalls, skip it and let the participant set it up later.
+- **The wow moment is the designed shell.** When they open localhost, it should look like a real app — not a blank starter page.
+- **Stay in `guided-build/`.** All files go in the subdirectory.
+- **Don't build features.** The playground's prompts handle that. You only scaffold.
