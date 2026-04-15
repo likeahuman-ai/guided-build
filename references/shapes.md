@@ -1,12 +1,16 @@
 # Project Shapes
 
-Three shapes. Each has 4 themed options. The participant picks shape + theme in the playground before running `/guided-build`.
+Three shapes. Each has themed options. The participant picks shape + theme in the playground before running `/guided-build`.
+
+The plugin accepts freeform theme names too — if someone types a theme not listed here, generate appropriate seed data and colour direction for it.
 
 ---
 
 ## Webshop
 
 **Hook:** A product catalog with a cart and a checkout flow.
+
+**Build mode:** Plugin-driven. The plugin scaffolds AND builds all 3 features (the playground has no build prompts for webshop).
 
 **Features:**
 1. Product Catalog — grid of 3 seeded products with image placeholder, price, short description
@@ -15,7 +19,14 @@ Three shapes. Each has 4 themed options. The participant picks shape + theme in 
 
 **Stack note:** Next.js 16 + Tailwind + Convex. Cart can be client state; product + order data in Convex.
 
-**Themes:**
+**Themes (playground pick-shop-theme step):**
+
+| Theme | Seed products | Colour direction |
+|-------|--------------|-----------------|
+| StackShop | Product Photography Pro ($29), Full Stack Builder ($49), Blog Post Machine ($19) | Bright, techy — electric blue + warm white |
+| BrainBoost Market | Cognitive Training Pack ($49), Sleep Optimization Guide ($29), Brain Health Assessment ($19) | Professional — deep teal + clean cream |
+
+**Alternative themes (shown in playground track picker preview):**
 
 | Theme | Seed products | Colour direction |
 |-------|--------------|-----------------|
@@ -29,6 +40,8 @@ Three shapes. Each has 4 themed options. The participant picks shape + theme in 
 ## Booking
 
 **Hook:** A time-slot reservation system — customer + admin flows.
+
+**Build mode:** Prompt-driven. The plugin scaffolds only. The playground provides CopyableCode prompts for each feature.
 
 **Features:**
 1. Availability Grid — 7-day x 6-slot grid showing open/booked status from Convex
@@ -51,6 +64,8 @@ Three shapes. Each has 4 themed options. The participant picks shape + theme in 
 ## Quiz
 
 **Hook:** A timed multi-choice quiz with points and a share card.
+
+**Build mode:** Prompt-driven. The plugin scaffolds only. The playground provides CopyableCode prompts for each feature.
 
 **Features:**
 1. Question Screen — one question at a time, 4 answer tiles (A/B/C/D), progress dots, hardcoded 10-question deck
