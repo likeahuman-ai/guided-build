@@ -1,10 +1,11 @@
 ---
+name: telemetry-off
 description: >
   Turn off workshop telemetry. The plugin keeps working — it just stops sending data.
   Use when participant says "stop telemetry", "turn off tracking", "opt out",
   "disable analytics", "I want to end telemetry", "stop sending data",
   "privacy", "no more tracking".
-argument-hint: "[none]"
+disable-model-invocation: true
 ---
 
 # /telemetry-off — Disable Workshop Telemetry

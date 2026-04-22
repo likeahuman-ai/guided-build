@@ -1,13 +1,63 @@
 {
-  "description": "Guided build telemetry — tracks command start for instructor dashboard",
+  "description": "Workshop telemetry — tracks participant progress through /plan /tickets /build /review /localhost /launch",
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": "^/guided-build",
+        "matcher": "^/plan",
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh guided-build:started '{}'",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh plan:started",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^/tickets",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh tickets:started",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^/build",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh build:started",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^/review",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh review:started",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^/localhost",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh launch:localhost-started",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^/launch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh launch:vercel-started",
             "timeout": 5
           }
         ]

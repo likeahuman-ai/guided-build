@@ -1,6 +1,14 @@
 {
-  "name": "lah-guided-build",
+  "name": "guided-build",
   "version": "3.0.0",
   "description": "Workshop guided build — compressed dev flow",
-  "author": { "name": "Like A Human" }
+  "author": {
+    "name": "LikeAHuman.ai",
+    "email": "academy@likeahuman.ai",
+    "url": "https://likeahuman.ai"
+  },
+  "homepage": "https://github.com/likeahuman-ai/guided-build",
+  "repository": "https://github.com/likeahuman-ai/guided-build",
+  "license": "MIT",
+  "skills": "./skills/"
 }

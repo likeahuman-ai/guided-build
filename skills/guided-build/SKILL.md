@@ -1,11 +1,13 @@
 ---
+name: guided-build
 description: >
   Scaffold a guided build project with design baked in. Sets up Next.js + Convex + Tailwind
   with the participant's chosen shape, theme, and vibe. For webshop: also builds all 3 features.
   For booking/quiz: scaffolds and hands off to the playground's CopyableCode prompts.
-  Run after picking your project in the playground. Use when participant says "start the guided
-  build", "scaffold my project", "set up my project", or the playground tells them to run this command.
-argument-hint: "[shape] [theme] — e.g. webshop stackshop, booking yoga, quiz movies"
+  Use when participant says "start the guided build", "start building", "scaffold my project",
+  "let's build something", "I'm ready to code", "Module 1", or the instructor says
+  "start Module 1". Also use when Claude detects the participant has completed orientation
+  and hasn't started building yet.
 ---
 
 # /guided-build — Project Scaffold + Design + Build
@@ -15,8 +17,8 @@ You are running the guided build for a beginner. The playground has already walk
 - **Webshop** → scaffold the project AND build all 3 features (the playground has no build prompts for webshop — it says "the plugin handles everything")
 - **Booking / Quiz** → scaffold the project and hand off to the playground (it provides CopyableCode prompts the participant will paste)
 
-Load `${CLAUDE_PLUGIN_ROOT}/references/tone.md` and follow it throughout.
-Load `${CLAUDE_PLUGIN_ROOT}/references/shapes.md` for shape + theme data.
+Load `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/tone.md` and follow it throughout.
+Load `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/shapes.md` for shape + theme data.
 
 **Initial request:** $ARGUMENTS
 
@@ -169,7 +171,7 @@ No git. No GitHub. No pull requests. No tickets. Features are sections in PRD.md
 This folder is self-contained and safe to delete after the workshop.
 ```
 
-**Section 3: Design rules** (copy from `${CLAUDE_PLUGIN_ROOT}/references/design-guide.md`)
+**Section 3: Design rules** (copy from `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/design-guide.md`)
 
 This means every prompt the participant pastes from the playground will make Claude read these rules first.
 
@@ -203,7 +205,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:scaffolded" "{\
 
 The playground's webshop build steps have no CopyableCode prompts. They say "the plugin handles everything." So you build all 3 features now, in sequence.
 
-Load `${CLAUDE_PLUGIN_ROOT}/references/design-guide.md` and follow the anti-slop rules for everything you build.
+Load `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/design-guide.md` and follow the anti-slop rules for everything you build.
 
 ### Feature 1: Product Catalog (~15 min)
 
@@ -250,8 +252,8 @@ Build on top of the cart. Completes the full shopping flow.
 
 ### Webshop build rules
 
-- Follow `${CLAUDE_PLUGIN_ROOT}/references/tone.md` — brief check-ins between features, not verbose commentary
-- Follow `${CLAUDE_PLUGIN_ROOT}/references/design-guide.md` — anti-slop rules apply to everything
+- Follow `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/tone.md` — brief check-ins between features, not verbose commentary
+- Follow `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/design-guide.md` — anti-slop rules apply to everything
 - Each feature extends the previous — never rebuild what already exists
 - If something breaks, fix it silently. Don't explain debugging unless asked.
 - Don't ask permission for implementation details — just build. Participant watches.
@@ -273,7 +275,7 @@ Done. The plugin's active work is finished. The playground drives from here. The
 
 ## Rules
 
-Load `${CLAUDE_PLUGIN_ROOT}/references/tone.md` for communication guidance.
+Load `${CLAUDE_PLUGIN_ROOT}/skills/guided-build/references/tone.md` for communication guidance.
 
 - **Be fast.** This is a 60-minute build. Every minute of setup is a minute not building.
 - **Be friendly.** Many participants are scaffolding for the first time.
