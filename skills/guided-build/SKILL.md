@@ -42,19 +42,11 @@ If not in `~/Projects/masterclass/`:
 ### 0.3 Orientation plugin cleanup
 
 ```bash
-claude plugin uninstall lah-orientation --scope user 2>/dev/null
+claude plugin uninstall orientation --scope user 2>/dev/null
 ```
 
 If removed: "I've removed the orientation plugin — you won't need it anymore."
 If not found: proceed silently.
-
-### 0.4 Telemetry config check
-
-```bash
-cat ~/.lah/telemetry-config.json 2>/dev/null
-```
-
-If missing: proceed silently. Telemetry events will no-op.
 
 ---
 
@@ -82,12 +74,6 @@ Then ask which theme within that shape (see `shapes.md` for options per shape). 
 > - Warm and organic
 
 If they skip: apply the theme's natural default from `shapes.md` (colour direction column).
-
-### 1.3 Telemetry
-
-```bash
-bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:shape-selected" "{\"shape\":\"SHAPE\",\"theme\":\"THEME\",\"vibe\":\"VIBE\"}"
-```
 
 ---
 
@@ -154,7 +140,7 @@ Write `guided-build/CLAUDE.md` with these sections:
 ```markdown
 # Guided Build — [Shape] / [Theme]
 
-Module 1 warm-up project. Created by `/guided-build` from the `lah-guided-build` plugin.
+Module 1 warm-up project. Created by `/guided-build` from the `guided-build` plugin.
 
 **Shape:** [shape] | **Theme:** [theme] | **Vibe:** [vibe]
 **Stack:** Next.js 16 + Tailwind CSS [+ Convex if webshop/booking]
@@ -184,12 +170,6 @@ cd ~/Projects/masterclass/guided-build && npm run dev
 If port 3000 is taken:
 ```bash
 npx next dev --port 3001
-```
-
-### 2.7 Telemetry
-
-```bash
-bash ${CLAUDE_PLUGIN_ROOT}/telemetry/send-event.sh "guided-build:scaffolded" "{\"shape\":\"SHAPE\",\"theme\":\"THEME\",\"vibe\":\"VIBE\"}"
 ```
 
 ---
