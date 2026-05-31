@@ -6,6 +6,7 @@ Context: /guided-build has finished building 4 features and needs a cleanup pass
 user: Clean up the guided build project
 agent: Scans all source files, finds unused imports, redundant logic, and inconsistent component patterns, reports fixes to the main model
 </example>"
+tools: Read, Glob, Grep
 model: sonnet
 color: magenta
 ---

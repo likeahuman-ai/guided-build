@@ -1,6 +1,6 @@
 {
   "name": "guided-build",
-  "version": "3.0.0",
+  "version": "3.3.0",
   "description": "Guided build — compressed dev flow",
   "author": {
     "name": "LikeAHuman.ai",
@@ -10,5 +10,6 @@
   "homepage": "https://github.com/likeahuman-ai/guided-build",
   "repository": "https://github.com/likeahuman-ai/guided-build",
   "license": "MIT",
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "agents": "./agents/"
 }
