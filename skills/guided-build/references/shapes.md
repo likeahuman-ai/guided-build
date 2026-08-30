@@ -17,7 +17,7 @@ The plugin accepts freeform theme names too — if someone types a theme not lis
 2. Shopping Cart — add to cart, update quantity, running total, cart badge in header
 3. Checkout & Order — simple form (name + email), mock payment step, order confirmation with unique order number
 
-**Stack note:** Next.js 16 + Tailwind + Convex. Cart can be client state; product + order data in Convex.
+**Stack note:** Next.js 16 + Tailwind. Products in `src/data/products.ts`; cart and orders in client state; order history persists in `localStorage`. Convex upgrade (on request): products + orders move to Convex tables.
 
 **Themes (playground pick-shop-theme step):**
 
@@ -44,11 +44,11 @@ The plugin accepts freeform theme names too — if someone types a theme not lis
 **Build mode:** Prompt-driven. The plugin scaffolds only. The playground provides CopyableCode prompts for each feature.
 
 **Features:**
-1. Availability Grid — 7-day x 6-slot grid showing open/booked status from Convex
-2. Booking Form — customer clicks open slot, fills name + email + party size, Convex mutation flips slot to booked, confirmation screen
-3. Admin Queue — /admin page listing all bookings with Confirm/Cancel actions, real-time updates
+1. Availability Grid — 7-day x 6-slot grid showing open/booked status from the project's data layer
+2. Booking Form — customer clicks open slot, fills name + email + party size, the slot flips to booked in the data layer, confirmation screen
+3. Admin Queue — /admin page listing all bookings with Confirm/Cancel actions, live updates from the data layer
 
-**Stack note:** Next.js 16 + Tailwind + Convex. Slots, bookings, and statuses all live in Convex.
+**Stack note:** Next.js 16 + Tailwind. Slots in `src/data/slots.ts`; bookings and statuses in client state. Convex upgrade (on request): slots + bookings move to Convex — the shape that gains most from it (real-time admin queue).
 
 **Themes:**
 
@@ -72,7 +72,7 @@ The plugin accepts freeform theme names too — if someone types a theme not lis
 2. Timer & Feedback — 10-second countdown, green flash correct, red flash wrong, auto-advance
 3. Score & Share — running score, end screen with rank name (Quiz Master / Solid / Warming Up / Better Luck), share button copies result to clipboard
 
-**Stack note:** Next.js 16 + Tailwind. Client-side state only — no Convex for the 60-min build. Convex optional post-workshop for leaderboard.
+**Stack note:** Next.js 16 + Tailwind. Client-side state only. Convex upgrade (on request, post-workshop): a leaderboard.
 
 **Themes:**
 

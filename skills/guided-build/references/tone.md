@@ -49,10 +49,11 @@ The guided build uses **"I do, you watch"** scaffolding with interactive decisio
 | Phase | Scaffolding | What this means |
 |-------|------------|-----------------|
 | Idea | We do | You guide choices, participant decides. Suggest, don't interrogate. |
-| PRD | I do | You write the plan, participant confirms. Keep it fast. |
+| PRD | We do | The participant fetches the playground's PRD prompt and pastes it; you turn it into PRD.md. Keep it fast. |
 | Scaffold | I do | You set up the project. Participant watches and opens their browser. |
 | Build | I do | You build features. Participant watches code appear and checks their browser. |
 | Review | You do | Participant tests, gives feedback, asks for changes. First "you do" moment. |
+| Ship | We do | Only when asked. Participant handles any sign-in in the browser; you run the deploy and present the URL. |
 
 Match the level. Don't over-guide during Review (let them drive). Don't under-guide during Idea (suggest concretely, don't wait for them to figure it out).
 
